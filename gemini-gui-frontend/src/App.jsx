@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import MainLayout from './layouts/MainLayout';
 import './styles/main.css';
+import CommandInput from './components/CommandInput.jsx';
 
 function App() {
   const [messages, setMessages] = useState([
@@ -78,24 +79,12 @@ function App() {
           <div ref={chatEndRef} />
         </div>
         <div className="chat-input-row">
-          <input
-            type="text"
-            value={command}
-            onChange={(e) => setCommand(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') executeCommand();
-            }}
-            className="chat-input"
-            placeholder="Enter CLI command..."
-            disabled={loading}
+          <CommandInput
+            command={command}
+            setCommand={setCommand}
+            onExecute={executeCommand}
+            loading={loading}
           />
-          <button
-            onClick={executeCommand}
-            className="chat-send-btn"
-            disabled={loading}
-          >
-            {loading ? '...' : '➤'}
-          </button>
         </div>
       </div>
     </MainLayout>

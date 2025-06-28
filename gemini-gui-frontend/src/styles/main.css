@@ -211,3 +211,56 @@ body {
   background: #94a3b8;
   cursor: not-allowed;
 }
+
+.command-options {
+  background: #181a20;
+  border-radius: 6px;
+  padding: 1rem;
+  margin-bottom: 0.75rem;
+  border: 1px solid #353945;
+}
+
+.option-row {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.option-label {
+  display: flex;
+  align-items: center;
+  color: #e5e7eb;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.option-checkbox {
+  margin-right: 0.5rem;
+  accent-color: #2563eb;
+}
+
+.options-toggle-btn {
+  padding: 0.75rem;
+  border-radius: 50%;
+  background: #353945;
+  color: #e5e7eb;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.options-toggle-btn:hover {
+  background: #2563eb;
+}
+
+.chat-input-container {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  width: 100%;
+}
