@@ -1,0 +1,73 @@
+.App {
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+
+h1 {
+  color: #333;
+}
+
+.command-input-container {
+  display: flex;
+  margin-bottom: 20px;
+  width: 80%;
+  max-width: 600px;
+}
+
+.command-input-container input {
+  flex-grow: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px 0 0 4px;
+  font-size: 16px;
+}
+
+.command-input-container button {
+  padding: 10px 15px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 0 4px 4px 0;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.command-input-container button:hover {
+  background-color: #0056b3;
+}
+
+.command-input-container button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.output-container {
+  width: 80%;
+  max-width: 600px;
+  background-color: #f4f4f4;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 15px;
+  text-align: left;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  min-height: 100px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.output-stdout {
+  color: #333;
+}
+
+.output-stderr {
+  color: #d9534f;
+}
+
+.output-error {
+  color: #dc3545;
+  font-weight: bold;
+}
