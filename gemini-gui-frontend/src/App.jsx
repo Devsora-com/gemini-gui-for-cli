@@ -11,9 +11,17 @@ function App() {
   const [loading, setLoading] = useState(false);
   const chatEndRef = useRef(null);
 
-  const executeCommand = async () => {
-    const trimmed = command.trim();
-    if (!trimmed) return;
+  const executeCommand = async (cmdToExecute) => {
+    console.log('executeCommand called with:', cmdToExecute);
+    // Use the passed command or fall back to the state command
+    const commandToRun = cmdToExecute || command;
+    const trimmed = commandToRun.trim();
+    console.log('Final trimmed command:', trimmed);
+    if (!trimmed) {
+      console.log('Command is empty, returning early');
+      return;
+    }
+    
     setLoading(true);
     setMessages((prev) => [
       ...prev,
@@ -54,7 +62,7 @@ function App() {
       ]);
     } finally {
       setLoading(false);
-      setCommand('');
+      // Don't clear command here since CommandInput handles it
     }
   };
 

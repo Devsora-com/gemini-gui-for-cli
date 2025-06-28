@@ -44,9 +44,18 @@ const CommandInput = ({ command, setCommand, onExecute, loading }) => {
   };
 
   const handleExecute = () => {
+    console.log('Button clicked! Current command:', command);
     const finalCommand = buildCommand();
-    setCommand(finalCommand);
-    setTimeout(onExecute, 0); // Ensure setCommand finishes before executing
+    console.log('Final command to execute:', finalCommand);
+    
+    if (finalCommand.trim()) {
+      // Clear the input immediately for better UX
+      setCommand('');
+      // Pass the built command to onExecute
+      onExecute(finalCommand);
+    } else {
+      console.log('No command to execute - command is empty');
+    }
   };
 
   return (
@@ -111,9 +120,14 @@ const CommandInput = ({ command, setCommand, onExecute, loading }) => {
           }}
         />
         <button 
-          onClick={handleExecute} 
+          onClick={(e) => {
+            e.preventDefault();
+            console.log('Button click event triggered!');
+            handleExecute();
+          }} 
           disabled={loading} 
           className="chat-send-btn"
+          type="button"
         >
           {loading ? '⏳' : '▶️'}
         </button>
