@@ -204,12 +204,27 @@ body {
   border: none;
   font-size: 1.2rem;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: all 0.1s ease;
+  min-width: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chat-send-btn:hover:not(:disabled) {
+  background: #1d4ed8;
+  transform: scale(1.05);
+}
+
+.chat-send-btn:active:not(:disabled) {
+  background: #1e40af;
+  transform: scale(0.95);
 }
 
 .chat-send-btn:disabled {
   background: #94a3b8;
   cursor: not-allowed;
+  transform: none;
 }
 
 .command-options {
