@@ -2,6 +2,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import MainLayout from './layouts/MainLayout';
 import './styles/main.css';
 import CommandInput from './components/CommandInput.jsx';
+import ReactMarkdown from 'react-markdown';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { a11yDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 function App() {
   const [messages, setMessages] = useState([
@@ -45,7 +48,7 @@ function App() {
         if (data.stdout) {
           setMessages((prev) => [
             ...prev,
-            { from: 'pc', text: `Stdout: ${data.stdout}` }
+            { from: 'pc', text: `${data.stdout}` }
           ]);
         }
         if (data.stderr) {
@@ -75,13 +78,43 @@ function App() {
   return (
     <MainLayout>
       <div className="chat-window">
+        <div className="chat-header">
+          <button onClick={() => setMessages([{ from: 'pc', text: 'Chat cleared.' }])} className="clear-chat-button">
+            Clear Chat
+          </button>
+        </div>
         <div className="chat-messages">
           {messages.map((msg, idx) => (
             <div
               key={idx}
               className={`chat-bubble ${msg.from === 'you' ? 'chat-bubble-user' : 'chat-bubble-pc'}`}
             >
-              {msg.text}
+              <ReactMarkdown
+                children={msg.text}
+                components={{
+                  code({node, inline, className, children, ...props}) {
+                    const match = /language-(\w+)/.exec(className || '')
+                    return !inline && match ? (
+                      <SyntaxHighlighter
+                        children={String(children).replace(/\n$/, '')}
+                        style={a11yDark}
+                        language={match[1]}
+                        PreTag="div"
+                        {...props}
+                      />
+                    ) : (
+                      <code className={className} {...props}>
+                        {children}
+                      </code>
+                    )
+                  }
+                }}
+              />
+              {msg.from === 'pc' && (
+                <button onClick={() => navigator.clipboard.writeText(msg.text)} className="copy-button">
+                  Copy
+                </button>
+              )}
             </div>
           ))}
           <div ref={chatEndRef} />

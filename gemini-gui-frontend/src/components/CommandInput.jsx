@@ -1,12 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const CommandInput = ({ command, setCommand, onExecute, loading }) => {
   const [usePrompt, setUsePrompt] = useState(false);
   const [useVerbose, setUseVerbose] = useState(false);
   const [useHelp, setUseHelp] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
+  const [history, setHistory] = useState([]);
+  const [historyIndex, setHistoryIndex] = useState(-1);
 
-  // Get the appropriate placeholder text based on current mode
+  useEffect(() => {
+    const storedHistory = localStorage.getItem('commandHistory');
+    if (storedHistory) {
+      setHistory(JSON.parse(storedHistory));
+    }
+  }, []);
+
+  const addToHistory = (cmd) => {
+    const updatedHistory = [cmd, ...history.filter(c => c !== cmd)].slice(0, 50);
+    setHistory(updatedHistory);
+    localStorage.setItem('commandHistory', JSON.stringify(updatedHistory));
+  };
+
   const getPlaceholder = () => {
     if (useHelp) {
       return "Enter command to get help for (e.g., 'ls', 'git', 'npm')...";
@@ -20,23 +34,18 @@ const CommandInput = ({ command, setCommand, onExecute, loading }) => {
     return "Enter CLI command";
   };
 
-  // Build the command string based on toggles
   const buildCommand = () => {
     let cmd = command.trim();
     
     if (useHelp && cmd) {
-      // For help mode, show help for the entered command
       cmd = `${cmd} --help`;
     } else if (usePrompt && cmd) {
-      // For prompt mode, wrap in gemini prompt
       cmd = `gemini -p "${cmd}"`;
     }
     
-    // Add verbose flag if enabled (works with any mode)
     if (useVerbose && !usePrompt) {
       cmd += ' -v';
     } else if (useVerbose && usePrompt) {
-      // For prompt mode with verbose, add -v before the quote
       cmd = cmd.replace('gemini -p', 'gemini -p -v');
     }
     
@@ -44,17 +53,36 @@ const CommandInput = ({ command, setCommand, onExecute, loading }) => {
   };
 
   const handleExecute = () => {
-    console.log('Button clicked! Current command:', command);
     const finalCommand = buildCommand();
-    console.log('Final command to execute:', finalCommand);
     
     if (finalCommand.trim()) {
-      // Clear the input immediately for better UX
+      addToHistory(command);
       setCommand('');
-      // Pass the built command to onExecute
+      setHistoryIndex(-1);
       onExecute(finalCommand);
-    } else {
-      console.log('No command to execute - command is empty');
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      handleExecute();
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (historyIndex < history.length - 1) {
+        const newIndex = historyIndex + 1;
+        setHistoryIndex(newIndex);
+        setCommand(history[newIndex]);
+      }
+    } else if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (historyIndex > 0) {
+        const newIndex = historyIndex - 1;
+        setHistoryIndex(newIndex);
+        setCommand(history[newIndex]);
+      } else {
+        setHistoryIndex(-1);
+        setCommand('');
+      }
     }
   };
 
@@ -69,7 +97,7 @@ const CommandInput = ({ command, setCommand, onExecute, loading }) => {
                 checked={usePrompt}
                 onChange={() => {
                   setUsePrompt(!usePrompt);
-                  if (!usePrompt) setUseHelp(false); // Disable help when enabling prompt
+                  if (!usePrompt) setUseHelp(false);
                 }}
                 className="option-checkbox"
               />
@@ -90,7 +118,7 @@ const CommandInput = ({ command, setCommand, onExecute, loading }) => {
                 checked={useHelp}
                 onChange={() => {
                   setUseHelp(!useHelp);
-                  if (!useHelp) setUsePrompt(false); // Disable prompt when enabling help
+                  if (!useHelp) setUsePrompt(false);
                 }}
                 className="option-checkbox"
               />
@@ -113,18 +141,10 @@ const CommandInput = ({ command, setCommand, onExecute, loading }) => {
           onChange={(e) => setCommand(e.target.value)}
           placeholder={getPlaceholder()}
           className="chat-input"
-          onKeyPress={(e) => {
-            if (e.key === 'Enter') {
-              handleExecute();
-            }
-          }}
+          onKeyDown={handleKeyDown}
         />
         <button 
-          onClick={(e) => {
-            e.preventDefault();
-            console.log('Button click event triggered!');
-            handleExecute();
-          }} 
+          onClick={handleExecute}
           disabled={loading} 
           className="chat-send-btn"
           type="button"

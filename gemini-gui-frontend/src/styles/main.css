@@ -171,6 +171,26 @@ body {
   background: #181a20;
   color: #e5e7eb;
   border-bottom-left-radius: 4px;
+  position: relative;
+}
+
+.copy-button {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 3px 8px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 12px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.chat-bubble-pc:hover .copy-button {
+  opacity: 1;
 }
 
 .chat-input-row {
@@ -273,9 +293,33 @@ body {
   background: #2563eb;
 }
 
+
+.chat-header {
+  display: flex;
+  justify-content: flex-end;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #353945;
+}
+
+.clear-chat-button {
+  background: #4a5568;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.clear-chat-button:hover {
+  background: #2d3748;
+}
+
 .chat-input-container {
   display: flex;
   gap: 0.5rem;
   align-items: center;
   width: 100%;
 }
+
